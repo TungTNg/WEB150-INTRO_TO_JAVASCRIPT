@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta charset="utf-8">
+        <title>Amount Donated Calculator</title>
+        <link rel="" href="">
+
+</head>
+<body>
+    <h1>
+        <form method="get" action="#">
+        Amount want to donate: <input id="a" type="number">
+        <button type="button" id="donate"> Donate</button>
+        <br> Total amount donated: $ <em id="b">_?_</em>
+        </form>
+    </h1>
+    
+    
+    
+
+    <script type="text/javascript" href="java.js">
+    
+    var a_input = document.getElementById('a');
+    var b_output = document.getElementById('b');
+    var submit_button = document.getElementById('donate');
+    var total = 0;
+        
+    submit_button.addEventListener('click', function(event) {
+        var a = a_input.value;
+        total = total + parseInt(a);
+        b_output.innerHTML = parseInt(total);
+        }, false);
+    
+    </script>
+</body>        
+</html>
