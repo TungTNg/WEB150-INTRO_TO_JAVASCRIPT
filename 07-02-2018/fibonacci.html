@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fibonacci Sequences</title>
+</head>
+<body>
+    <div id="fibonacci-container">
+        <h1>
+            0
+        </h1>
+        <h1>
+            1
+        </h1>
+    </div>
+    
+    <script type="text/javascript">
+        var fibonacciContainer = document.getElementById('fibonacci-container'),
+            fn1 = 1,
+            fn2 = 0;
+
+        for (var counter = 0; counter < 10; counter++) {
+            console.log(counter);
+            var fiboTag = document.createElement('h1'),
+                fiboNumber = fn1 + fn2;
+            fiboTag.innerHTML = fiboNumber;
+            fibonacciContainer.appendChild(fiboTag);
+            fn2 = fn1;
+            fn1 = fiboNumber;
+        }
+    </script>
+</body>
+</html>

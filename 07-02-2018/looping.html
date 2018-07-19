@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Looping Examples</title>
+</head>
+<body>
+    <div id="howdy-container">
+        <h1>
+            Howdy!
+        </h1>
+    </div>
+    
+    <script type="text/javascript">
+        var howdyContainer = document.getElementById('howdy-container');
+        
+        for (var counter = 1; counter < 100; counter++) {
+            console.log(counter);
+            var howdyTag = document.createElement('h1');
+            howdyTag.innerHTML = 'Howdy!';
+            howdyContainer.appendChild(howdyTag);
+        }
+        
+        
+    </script>
+</body>
+</html>

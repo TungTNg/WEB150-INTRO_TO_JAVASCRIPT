@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Function Examples</title>
+</head>
+<body>
+        <h1>
+            Employee logins
+        </h1>
+        
+        <table >
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last Login</th>
+                </tr> 
+            </thead>
+            <tbody id='login-table'>
+            </tbody>
+        </table>
+    
+    <script type="text/javascript">
+        
+        var serverData = [
+            {
+                'name': 'Sally Smith',
+                'email': 's.smith@fiboco.com',
+                'last_login': '2018-03-06T07:12:25-07:00'
+            },
+            {
+                'name': 'Samantha Sue',
+                'email': 's.sue@fiboco.com',
+                'last_login': '2018-05-12T08:12:25-09:00'
+            },
+            {
+                'name': 'Bob Martini',
+                'email': 'b.martini@fiboco.com',
+                'last_login': '2018-05-17T07:22:54-08:00'
+            }
+            ]
+        
+        var dateTimeFormat = function(dateString) {
+            var dateTimeObject = new Date(dateString)
+            var formattedDate = dateTimeObject.getDate() + '/' +
+                                dateTimeObject.getMonth() + '/' +
+                                dateTimeObject.getFullYear();
+            return formattedDate;
+        }
+        
+        var loginTbody = document.getElementById('login-table');
+        var tbodyContent = '';
+        
+        for (var i = 0; i < serverData.length; i++) {
+                var employee = serverData[i];
+                tbodyContent += '<tr><td>' + employee.name + 
+                                '</td><td>' + employee.email +
+                                '</td><td>' + dateTimeFormat(employee.last_login) +
+                                '</td></tr>';
+            }
+            loginTbody.innerHTML = tbodyContent;
+    </script>
+</body>
+</html>

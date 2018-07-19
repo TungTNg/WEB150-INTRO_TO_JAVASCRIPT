@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+        <h1>
+            
+        </h1>
+        
+    
+    <script type="text/javascript">
+        var myNumber = 3.1423423423;
+        console.log(myNumber.toFixed(2));
+        
+        var myString ='Howdy, World!';
+        console.log(myString);
+        console.log(myString.length);
+        console.log(myString.slice(7, 12));
+        
+        var NewString =  {
+            value: "",
+            length: null,
+            slice: (string, a, b) => {
+                return string.slice(a, b);
+            }
+        };
+        
+        var myNewString = NewString;
+        myNewString.value = "Howdy, World!";
+        myNewString.length = 13;
+        myNewString.newProperty = "Whazzzzzzup!"
+        
+        console.log(myNewString.value);
+        console.log(myNewString.length);
+        console.log(myNewString.slice(myNewString.value, 7, 12));
+        console.log(myNewString.newProperty);
+        
+        // Array
+        var myArray = [];
+        myArray.push('H');
+        myArray.push('o');
+        myArray.push('w');
+        myArray.push('d');
+        myArray.push('y');
+        
+        myArray.unshift('^_^');
+        
+        myArray.shift();
+        console.log(myArray);
+        
+    </script>
+</body>
+</html>

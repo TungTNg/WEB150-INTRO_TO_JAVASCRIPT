@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+    </head>
+    <body>
+        
+        <script type="text/javascript">
+            
+            function decode(str) {
+                var completedStr = "";
+                for (var i = 0; i < str.length; i++) {
+                    if (i % 2 === 0 && i % 3 === 0) {
+                    var newNumber = str.charCodeAt(i) + 1;
+                    var decodedStr = String.fromCharCode(newNumber);
+                    completedStr += decodedStr;
+                    } else if (i % 2 === 0) {
+                    var newNumber = str.charCodeAt(i) - 1;
+                    var decodedStr = String.fromCharCode(newNumber);
+                    completedStr += decodedStr;
+                    } else if (i % 3 === 0) {
+                    var newNumber = str.charCodeAt(i) - 3;
+                    var decodedStr = String.fromCharCode(newNumber);
+                    completedStr += decodedStr;
+                    } else {
+                    var newNumber = str.charCodeAt(i);
+                    var decodedStr = String.fromCharCode(newNumber);
+                    completedStr += decodedStr;
+                    }
+
+                } 
+                console.log(completedStr);
+            }
+            
+            decode('shf#ne`njqh nf!ojfd jv!41');
+
+        </script>
+    </body>
+</html>
