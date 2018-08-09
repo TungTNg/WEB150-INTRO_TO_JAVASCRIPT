@@ -1,35 +1,72 @@
 class Markdown {
     constructor() {
+        this.node = null;
     }
     
     parse(text) {
-        let inputArray = text.split('\n');
-        let outputDiv = document.createElement('div');
-        for (let line of inputArray) {
-            let tagType = this.getTagType(line);
-            let element = document.createElement(tagType);
-            element.innerHTML = line;
-            outputDiv.appendChild(element);
+        let textArray = text.split('\n');
+        let result = document.createElement('div');
+        this.node = null;
+        for (let line of textArray) {
+            let nodeType = this.getNodeType(line),
+                parentNodeType = this.getParentNodeType(nodeType);
+                line = this.cleanLine(line);
+            if (parentNodeType === null) {
+                if (this.node !== null) {
+                    result.appendChild(this.node.cloneNode(true));
+                    this.node = null;
+                }
+                result.appendChild(this.createNode(nodeType, line));
+            } else {
+                if (this.node === null) {
+                    this.node = this.createNode(parentNodeType, '');
+                }
+                this.node.appendChild(this.createNode(nodeType, line));
+            }
         }
-        return outputDiv;
+        return result;
     }
     
-    getTagType(line) {
-        if (line.substr(0, 6) == "######") {
-            return 'h6';
-        } else if (line.substr(0, 5) == "#####") {
-            return 'h5';
-        } else if (line.substr(0, 4) == "####") {
-            return 'h4';
-        } else if (line.substr(0, 3) == "###") {
-            return 'h3';
-        } else if (line.substr(0, 2) == "##") {
-            return 'h2';
-        } else if (line.substr(0, 1) == "#") {
-            return 'h1';
+    getNodeType(line) {
+        if (line === '') {
+            return 'br';
+        } else if (/^#{1,6}/.test(line)) {
+            let headerNumber = 0;
+            for (let char of line) {
+                if (headerNumber >= 6) {
+                    break;
+                }
+                if (char === '#') {
+                    headerNumber += 1;
+                }
+            }
+            return `h${headerNumber}`;
+        } else if (/^-\s/.test(line)) {
+            return 'li';
         } else {
-            return 'div';
+            return 'p';
         }
+    }
+    
+    cleanLine(line) {
+        return line.replace(/^#{1,6}\s+|^-\s+/, '');
+    }
+    
+    getParentNodeType(nodeType) {
+        switch (nodeType) {
+            case 'li':
+                return 'ul';
+            default:
+                return null;
+        }
+    }
+    
+    createNode(nodeType, text) {
+        let node = document.createElement(nodeType);
+        if (text) {
+            node.innerHTML = text;
+        }
+        return node;
     }
 }
 

@@ -26,25 +26,39 @@ function _classCallCheck$2(instance, Constructor) { if (!(instance instanceof Co
 var Markdown = function () {
     function Markdown() {
         _classCallCheck$2(this, Markdown);
+
+        this.node = null;
     }
 
     _createClass$2(Markdown, [{
         key: 'parse',
         value: function parse(text) {
-            var inputArray = text.split('\n');
-            var outputDiv = document.createElement('div');
+            var textArray = text.split('\n');
+            var result = document.createElement('div');
+            this.node = null;
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
 
             try {
-                for (var _iterator = inputArray[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                for (var _iterator = textArray[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var line = _step.value;
 
-                    var tagType = this.getTagType(line);
-                    var element = document.createElement(tagType);
-                    element.innerHTML = line;
-                    outputDiv.appendChild(element);
+                    var nodeType = this.getNodeType(line),
+                        parentNodeType = this.getParentNodeType(nodeType);
+                    line = this.cleanLine(line);
+                    if (parentNodeType === null) {
+                        if (this.node !== null) {
+                            result.appendChild(this.node.cloneNode(true));
+                            this.node = null;
+                        }
+                        result.appendChild(this.createNode(nodeType, line));
+                    } else {
+                        if (this.node === null) {
+                            this.node = this.createNode(parentNodeType, '');
+                        }
+                        this.node.appendChild(this.createNode(nodeType, line));
+                    }
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -61,26 +75,75 @@ var Markdown = function () {
                 }
             }
 
-            return outputDiv;
+            return result;
         }
     }, {
-        key: 'getTagType',
-        value: function getTagType(line) {
-            if (line.substr(0, 6) == "######") {
-                return 'h6';
-            } else if (line.substr(0, 5) == "#####") {
-                return 'h5';
-            } else if (line.substr(0, 4) == "####") {
-                return 'h4';
-            } else if (line.substr(0, 3) == "###") {
-                return 'h3';
-            } else if (line.substr(0, 2) == "##") {
-                return 'h2';
-            } else if (line.substr(0, 1) == "#") {
-                return 'h1';
+        key: 'getNodeType',
+        value: function getNodeType(line) {
+            if (line === '') {
+                return 'br';
+            } else if (/^#{1,6}/.test(line)) {
+                var headerNumber = 0;
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
+
+                try {
+                    for (var _iterator2 = line[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var char = _step2.value;
+
+                        if (headerNumber >= 6) {
+                            break;
+                        }
+                        if (char === '#') {
+                            headerNumber += 1;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
+                        }
+                    } finally {
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
+                        }
+                    }
+                }
+
+                return 'h' + headerNumber;
+            } else if (/^-\s/.test(line)) {
+                return 'li';
             } else {
-                return 'div';
+                return 'p';
             }
+        }
+    }, {
+        key: 'cleanLine',
+        value: function cleanLine(line) {
+            return line.replace(/^#{1,6}\s+|^-\s+/, '');
+        }
+    }, {
+        key: 'getParentNodeType',
+        value: function getParentNodeType(nodeType) {
+            switch (nodeType) {
+                case 'li':
+                    return 'ul';
+                default:
+                    return null;
+            }
+        }
+    }, {
+        key: 'createNode',
+        value: function createNode(nodeType, text) {
+            var node = document.createElement(nodeType);
+            if (text) {
+                node.innerHTML = text;
+            }
+            return node;
         }
     }]);
 
@@ -109,39 +172,73 @@ var Editor = function () {
             this.input.addEventListener('keyup', function () {
                 var content = _this.input.value;
                 var dom = _this.markdown.parse(content);
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
+                _this.clearOutput().appendChild(dom);
+            }, false);
+        }
+    }, {
+        key: 'clearOutput',
+        value: function clearOutput() {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
+            try {
+                for (var _iterator = this.output.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var content = _step.value;
+
+                    content.remove();
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
                 try {
-                    for (var _iterator = _this.output.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var existing = _step.value;
-
-                        existing.remove();
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
                     }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
                 } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
+                    if (_didIteratorError) {
+                        throw _iteratorError;
                     }
                 }
+            }
 
-                _this.output.appendChild(dom);
-            }, false);
+            return this.output;
         }
     }]);
 
     return Editor;
 }();
 
+var _createClass$3 = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck$3(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PreviewField = function () {
+    function PreviewField(inputId, outputId) {
+        _classCallCheck$3(this, PreviewField);
+
+        this.input = document.getElementById(inputId);
+        this.output = document.getElementById(outputId);
+        this.setup();
+    }
+
+    _createClass$3(PreviewField, [{
+        key: 'setup',
+        value: function setup() {
+            var _this = this;
+
+            this.input.addEventListener('keyup', function () {
+                _this.output.innerHTML = _this.input.value;
+            });
+        }
+    }]);
+
+    return PreviewField;
+}();
+
 var pumpkie = new Pumpkin();
 
+var author = new PreviewField('author', 'authorOutput');
+var publishedDate = new PreviewField('publishedDate', 'publishedDateOutput');
 var editor = new Editor('markdownInput', 'markdownOutput');
