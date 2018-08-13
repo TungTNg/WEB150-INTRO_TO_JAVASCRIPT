@@ -14,11 +14,9 @@ class Editor {
             let dom = this.markdown.parse(content);
              this.clearOutput().appendChild(dom);
         }, false);
-        
-
     }
         
-        clearOutput() {
+    clearOutput() {
         for (let content of this.output.children) {
             content.remove();
         }
